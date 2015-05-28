@@ -22,9 +22,11 @@ public class Indexer {
    private IndexWriter writer;
 
    public Indexer(String indexDirectoryPath) throws IOException{
+
       Directory indexDirectory = 
          FSDirectory.open(new File(indexDirectoryPath));
 
+      //create the indexer
       writer = new IndexWriter(indexDirectory, 
          new StandardAnalyzer(Version.LUCENE_36),true,
          IndexWriter.MaxFieldLength.UNLIMITED);
@@ -37,12 +39,14 @@ public class Indexer {
    private Document getDocument(File file) throws IOException{
       Document document = new Document();
 
-      
+      //index file contents
       Field contentField = new Field(LuceneConstants.CONTENTS, 
          new FileReader(file));
+      //index file name
       Field fileNameField = new Field(LuceneConstants.FILE_NAME,
          file.getName(),
          Field.Store.YES,Field.Index.NOT_ANALYZED);
+      //index file path
       Field filePathField = new Field(LuceneConstants.FILE_PATH,
          file.getCanonicalPath(),
          Field.Store.YES,Field.Index.NOT_ANALYZED);
@@ -61,6 +65,7 @@ public class Indexer {
    }
    
    public int createIndexOfFile(String filePath, FileFilter filter) throws IOException{
+   //get all files in the data directory
 
 	   File file= new File(filePath);
           if(!file.isDirectory()
@@ -74,6 +79,7 @@ public class Indexer {
        return writer.numDocs();
    }
    public int createIndexOfDir(String dataDirPath, FileFilter filter) throws IOException{
+  //get all files in the data directory
       File[] files = new File(dataDirPath).listFiles();
 
       for (File file : files) {

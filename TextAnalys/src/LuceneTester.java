@@ -7,18 +7,28 @@ import org.apache.lucene.search.TopDocs;
 
 public class LuceneTester {
 	
-   String indexDir = "/home/kal0ian/Downloads/IndexLuceneDir";
-   String dataDir = "/home/kal0ian/Downloads/DataLuceneDir";
-   String dataDirPath=System.getProperty("user.home");
+	public String indexDir;
+	public String dataDir;
+	
+	public LuceneTester(String indexDir,String dataDir) {
+		// TODO Auto-generated constructor stub
+		this.indexDir = indexDir;
+		this.dataDir = dataDir;
+	}
+   //String indexDir = "/home/kal0ian/Downloads/IndexLuceneDir";
+   //String dataDir = "/home/kal0ian/Downloads/DataLuceneDir";
+   //String dataDirPath=System.getProperty("user.home");
    Indexer indexer;
    Searcher searcher;
 
    public static void main(String[] args) {
       LuceneTester tester;
       try {
-         tester = new LuceneTester();
+    	 String indexDir = "/home/kal0ian/Downloads/IndexLuceneDir";
+    	 String dataDir = "/home/kal0ian/Downloads/DataLuceneDir";
+         tester = new LuceneTester(indexDir,dataDir);
          tester.createIndex();
-         tester.search("ocean");
+         tester.search("ocean summer beach pesho");
       } catch (IOException e) {
          e.printStackTrace();
       } catch (ParseException e) {
@@ -30,7 +40,7 @@ public class LuceneTester {
       indexer = new Indexer(indexDir);
       int numIndexed;
       long startTime = System.currentTimeMillis();	
-      numIndexed = indexer.createIndexOfFileSystem(dataDirPath, new TextFileFilter());
+      numIndexed = indexer.createIndexOfFileSystem(dataDir, new TextFileFilter());
       long endTime = System.currentTimeMillis();
       indexer.close();
       System.out.println(numIndexed+" File indexed, time taken: "
