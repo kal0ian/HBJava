@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryParser.ParseException;
@@ -28,7 +30,11 @@ public class LuceneTester {
     	 String dataDir = "/home/kal0ian/Downloads/DataLuceneDir";
          tester = new LuceneTester(indexDir,dataDir);
          tester.createIndex();
-         tester.search("ocean summer beach pesho");
+         LinkedList<String> url = tester.search("ocean summer beach pesho");
+         Iterator it = url.iterator();
+         while(it.hasNext()){
+        	 System.out.println(it.next());
+         }
       } catch (IOException e) {
          e.printStackTrace();
       } catch (ParseException e) {
@@ -39,27 +45,19 @@ public class LuceneTester {
    private void createIndex() throws IOException{
       indexer = new Indexer(indexDir);
       int numIndexed;
-      long startTime = System.currentTimeMillis();	
       numIndexed = indexer.createIndexOfFileSystem(dataDir, new TextFileFilter());
-      long endTime = System.currentTimeMillis();
-      indexer.close();
-      System.out.println(numIndexed+" File indexed, time taken: "
-         +(endTime-startTime)+" ms");		
+      indexer.close();	
    }
 
-   private void search(String searchQuery) throws IOException, ParseException{
+   private LinkedList<String> search(String searchQuery) throws IOException, ParseException{
       searcher = new Searcher(indexDir);
-      long startTime = System.currentTimeMillis();
       TopDocs hits = searcher.search(searchQuery);
-      long endTime = System.currentTimeMillis();
-   
-      System.out.println(hits.totalHits +
-         " documents found. Time :" + (endTime - startTime));
+      LinkedList<String> urlsOfFiles = new LinkedList<String>();
       for(ScoreDoc scoreDoc : hits.scoreDocs) {
          Document doc = searcher.getDocument(scoreDoc);
-            System.out.println("File: "
-            + doc.get(LuceneConstants.FILE_PATH));
+            urlsOfFiles.add(doc.get(LuceneConstants.FILE_PATH));
       }
       searcher.close();
+      return urlsOfFiles;
    }
 }
